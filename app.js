@@ -1,6 +1,7 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
+const FPS_MIN = 6;
 const FPS_MAX = 24;
 const CHUNK_WIDTH = 40;
 const CHUNK_HEIGHT = 40;
@@ -15,7 +16,7 @@ const DIR = {
 };
 
 var s, f, t;
-var fps = 6;
+var fps = FPS_MIN;
 var isPaused = false;
 var stats = {
   score: 0
@@ -216,6 +217,7 @@ function gameover() {
   if (restart) {
     init();
     t = null;
+    fps = FPS_MIN;
   } else {
     window.onkeydown = null;
   }
