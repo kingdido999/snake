@@ -1,0 +1,23 @@
+html, body {
+  margin: 0px;
+}
+
+body {
+  background: #999;
+}
+
+#canvas {
+  background: #eee;
+  margin: auto;
+  display: block;
+}
+
+#stats {
+  color: white;
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
+#stats ul li {
+  list-style-type: none;
+}
