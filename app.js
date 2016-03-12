@@ -1,3 +1,5 @@
+"use strict";
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -69,7 +71,6 @@ var snake = function(spec) {
   that.getBody = function() { return spec.queue.slice(0, spec.queue.length-1); }
   that.getLength = function() { return spec.queue.length; }
   that.draw = function() {
-    console.log(spec.queue.length);
     for (var i = 0; i < spec.queue.length; i++) {
       spec.queue[i].draw();
     }
@@ -122,7 +123,6 @@ var game = function(spec) {
     document.body.style.backgroundColor = bgColor;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-
     var headPos = getRandPos(canvas.width, canvas.height, CHUNK_WIDTH, CHUNK_HEIGHT);
     var foodPos = getRandPos(canvas.width, canvas.height, CHUNK_WIDTH, CHUNK_HEIGHT);
 
@@ -153,6 +153,36 @@ var game = function(spec) {
     f.draw();
 
     document.getElementById('score').innerHTML = stats.score;
+
+    window.addEventListener('resize', that.resizeCanvas, false);
+
+    // Key events listener
+    window.onkeydown = function(e) {
+      var code = e.keyCode ? e.keyCode : e.which;
+      var currentDir = s.getDirection();
+
+      switch (code) {
+        case 37: // Left
+          if (!currentDir || currentDir === DIR.up || currentDir === DIR.down) s.setDirection(DIR.left);
+          break;
+        case 38: // Up
+          if (!currentDir || currentDir === DIR.left || currentDir === DIR.right) s.setDirection(DIR.up);
+          break;
+        case 39: // Right
+          if (!currentDir || currentDir === DIR.up || currentDir === DIR.down) s.setDirection(DIR.right);
+          break;
+        case 40: // Down
+          if (!currentDir || currentDir === DIR.left || currentDir === DIR.right) s.setDirection(DIR.down);
+          break;
+        case 32: // Space
+          if (t) that.pause();
+        default:
+
+      }
+
+      // Start the game after arrow key is pressed
+      if (!t && s.getDirection()) t = new Timer(that.loop, 1000 / that.getFPS);
+    }
   }
 
   that.loop = function() {
@@ -185,29 +215,8 @@ var game = function(spec) {
 
     }
 
-    // Detect snake body collision
-    for (var i = 0; i < s.getBody().length; i++) {
-      var c = s.getBody()[i];
-      if (oldHead.getX() + transX == c.getX() && oldHead.getY() + transY == c.getY()) {
-        console.log('Ouch!')
-        return gameover();
-      };
-    }
-
-    // Detect food collision
-    if (oldHead.getX() + transX == f.getX() && oldHead.getY() + transY == f.getY()) {
-      console.log('Eat');
-      stats.score += 1;
-      document.getElementById('score').innerHTML = stats.score;
-
-      // Speed up
-      if (fps < FPS_MAX) fps += (FPS_MAX/fps)*0.05;
-      f.clear();
-      f = makeFood();
-      f.draw();
-    } else {
-      s.removeTail().clear();
-    }
+    detectBodyCollision(oldHead, transX, transY);
+    detectFoodCollision(oldHead, transX, transY);
 
     // Add a new head to the queue of chunks
     var newHead = chunk({
@@ -246,6 +255,34 @@ var game = function(spec) {
       canvas.width = window.innerWidth - (window.innerWidth % CHUNK_WIDTH) - CHUNK_WIDTH;
       canvas.height = window.innerHeight - (window.innerHeight % CHUNK_HEIGHT) - CHUNK_HEIGHT;
       that.init();
+    }
+  }
+
+  var detectBodyCollision = function(oldHead, transX, transY) {
+    // Detect snake body collision
+    for (var i = 0; i < s.getBody().length; i++) {
+      var c = s.getBody()[i];
+      if (oldHead.getX() + transX == c.getX() && oldHead.getY() + transY == c.getY()) {
+        console.log('Ouch!')
+        return gameover();
+      };
+    }
+  }
+
+  var detectFoodCollision = function(oldHead, transX, transY) {
+    // Detect food collision
+    if (oldHead.getX() + transX == f.getX() && oldHead.getY() + transY == f.getY()) {
+      console.log('Eat');
+      stats.score += 1;
+      document.getElementById('score').innerHTML = stats.score;
+
+      // Speed up
+      if (fps < FPS_MAX) fps += (FPS_MAX/fps)*0.05;
+      f.clear();
+      f = makeFood();
+      f.draw();
+    } else {
+      s.removeTail().clear();
     }
   }
 
@@ -321,38 +358,5 @@ function Timer(callback, delay) {
   this.resume();
 }
 
-
-
 var g = game({});
 g.resizeCanvas();
-
-window.addEventListener('resize', g.resizeCanvas, false);
-
-// Key events listener
-window.onkeydown = function(e) {
-  var code = e.keyCode ? e.keyCode : e.which;
-  var s = g.getSnake();
-  var currentDir = s.getDirection();
-
-  switch (code) {
-    case 37: // Left
-      if (!currentDir || currentDir === DIR.up || currentDir === DIR.down) s.setDirection(DIR.left);
-      break;
-    case 38: // Up
-      if (!currentDir || currentDir === DIR.left || currentDir === DIR.right) s.setDirection(DIR.up);
-      break;
-    case 39: // Right
-      if (!currentDir || currentDir === DIR.up || currentDir === DIR.down) s.setDirection(DIR.right);
-      break;
-    case 40: // Down
-      if (!currentDir || currentDir === DIR.left || currentDir === DIR.right) s.setDirection(DIR.down);
-      break;
-    case 32: // Space
-      if (t) g.pause();
-    default:
-
-  }
-
-  // Start the game after arrow key is pressed
-  if (!t && s.getDirection()) t = new Timer(g.loop, 1000 / g.getFPS());
-}
