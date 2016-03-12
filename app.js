@@ -306,9 +306,10 @@ var game = function(spec) {
     t.stop();
     var restart = window.confirm('Play again?');
     if (restart) {
-      that.init();
+      stats.score = 0;
       t = null;
       fps = FPS_MIN;
+      that.init();
     } else {
       window.onkeydown = null;
     }
