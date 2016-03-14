@@ -3,8 +3,8 @@
 var SNAKE = SNAKE || {};
 
 SNAKE.game = function(spec) {
-  const FPS_MIN = 6;
-  const FPS_MAX = 24;
+  const FPS_MIN = 8;
+  const FPS_MAX = 30;
   const DIR = { left: 'Left', right: 'Right', up: 'Up', down: 'Down'};
   const KEY_CODE = {left: 37, up: 38, right: 39, down: 40, space: 32};
 
@@ -30,6 +30,10 @@ SNAKE.game = function(spec) {
   that.getFood = function() { return f; }
 
   that.init = function() {
+    // Resize canvas if the game has not started yet
+    if (t) return;
+
+    resizeCanvas();
     canvas.style.backgroundColor = canvasColor;
     document.body.style.backgroundColor = bgColor;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -65,7 +69,8 @@ SNAKE.game = function(spec) {
 
     score.innerHTML = stats.score;
 
-    window.addEventListener('resize', that.resizeCanvas, false);
+    // Resize canvas
+    window.addEventListener('resize', that.init, false);
 
     // Key events listener
     window.onkeydown = function(e) {
@@ -105,21 +110,22 @@ SNAKE.game = function(spec) {
     var oldHead = s.getHead();
 
     // Boundaries check before apply translation
+    // If hit wall, the snake head will appear at the opposite side
     switch (s.getDirection()) {
       case DIR.left:
-        if (oldHead.getX() - speed < 0) return gameover();
+        if (oldHead.getX() - speed < 0) transX += canvas.width;
         else transX -= speed;
         break;
       case DIR.right:
-        if (oldHead.getX() + oldHead.getWidth() + speed > canvas.width) return gameover();
+        if (oldHead.getX() + oldHead.getWidth() + speed > canvas.width) transX -= canvas.width;
         else transX += speed;
         break;
       case DIR.up:
-        if (oldHead.getY() - speed < 0) return gameover();
+        if (oldHead.getY() - speed < 0) transY += canvas.height;
         else transY -= speed;
         break;
       case DIR.down:
-        if (oldHead.getY() + oldHead.getHeight() + speed > canvas.height) return gameover();
+        if (oldHead.getY() + oldHead.getHeight() + speed > canvas.height) transY -= canvas.height;
         else transY += speed;
         break;
       default:
@@ -157,15 +163,6 @@ SNAKE.game = function(spec) {
       console.log('Pause');
       isPaused = true;
       t.pause();
-    }
-  }
-
-  that.resizeCanvas = function() {
-    // Only resize canvas before the game start
-    if (!t) {
-      canvas.width = window.innerWidth - (window.innerWidth % chunkWidth) - chunkWidth;
-      canvas.height = window.innerHeight - (window.innerHeight % chunkHeight) - chunkHeight;
-      that.init();
     }
   }
 
@@ -241,6 +238,11 @@ SNAKE.game = function(spec) {
   }
 
   // Utilities
+  var resizeCanvas = function() {
+    canvas.width = window.innerWidth - (window.innerWidth % chunkWidth) - chunkWidth;
+    canvas.height = window.innerHeight - (window.innerHeight % chunkHeight) - chunkHeight;
+  }
+
   var detectBodyCollision = function(oldHead, transX, transY) {
     for (var i = 0; i < s.getBody().length; i++) {
       var c = s.getBody()[i];
