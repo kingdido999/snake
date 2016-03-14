@@ -296,15 +296,11 @@ SNAKE.game = function(spec) {
   var gameover = function() {
     console.log('Game Over');
     t.stop();
-    var restart = window.confirm('Play again?');
-    if (restart) {
-      stats.score = 0;
-      t = null;
-      fps = FPS_MIN;
-      that.init();
-    } else {
-      window.onkeydown = null;
-    }
+    alert('DIE, INSECTS!');
+    stats.score = 0;
+    t = null;
+    fps = FPS_MIN;
+    that.init();
   }
 
   function getRandPos(width, height, offsetX, offsetY) {
@@ -379,7 +375,6 @@ SNAKE.game = function(spec) {
                   swipeFunc.touches.direction = dy < 0 ? 'down' : 'up';
                 }
 
-  							console.log(swipeFunc.touches.direction);
                 var currentDir = s.getDirection();
 
                 switch (swipeFunc.touches.direction) {
