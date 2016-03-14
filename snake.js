@@ -311,15 +311,15 @@ var game = function(spec) {
 
   function getRandPos(width, height, offsetX, offsetY) {
     var norm = {
-      width: width/CHUNK_WIDTH,
-      height: height/CHUNK_HEIGHT,
-      offsetX: offsetX/CHUNK_WIDTH,
-      offsetY: offsetY/CHUNK_HEIGHT
+      width: width / chunkWidth,
+      height: height / chunkHeight,
+      offsetX: offsetX / chunkWidth,
+      offsetY: offsetY / chunkHeight
     };
 
     var pos = {
-      x: getRandomInt(norm.offsetX, norm.width - norm.offsetX) * CHUNK_WIDTH,
-      y: getRandomInt(norm.offsetY, norm.height - norm.offsetY) * CHUNK_HEIGHT
+      x: getRandomInt(norm.offsetX, norm.width - norm.offsetX) * chunkWidth,
+      y: getRandomInt(norm.offsetY, norm.height - norm.offsetY) * chunkHeight
     };
 
     return pos;
