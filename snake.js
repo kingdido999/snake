@@ -1,30 +1,23 @@
 "use strict";
 
-const CANVAS_ID = 'canvas';
-const SCORE_ID = 'score';
-const FPS_MIN = 6;
-const FPS_MAX = 24;
-const CHUNK_WIDTH = 40;
-const CHUNK_HEIGHT = 40;
-const BACKGROUND_COLOR = '#fff';
-const CANVAS_COLOR = '#ee334d';
-const SNAKE_HEAD_COLOR = '#fff';
-const SNAKE_BODY_COLOR = '#fff';
-const FOOD_COLOR = '#fff';
-const DIR = { left: 'Left', right: 'Right', up: 'Up', down: 'Down'};
-const KEY_CODE = {left: 37, up: 38, right: 39, down: 40, space: 32};
+var SNAKE = SNAKE || {};
 
-var game = function(spec) {
-  const canvas = document.getElementById(spec.canvasId || CANVAS_ID);
+SNAKE.game = function(spec) {
+  const FPS_MIN = 6;
+  const FPS_MAX = 24;
+  const DIR = { left: 'Left', right: 'Right', up: 'Up', down: 'Down'};
+  const KEY_CODE = {left: 37, up: 38, right: 39, down: 40, space: 32};
+
+  const canvas = document.getElementById(spec.canvasId || 'canvas');
   const ctx = canvas.getContext('2d');
-  const score = document.getElementById(spec.scoreId || SCORE_ID);
-  const bgColor = spec.bgColor || BACKGROUND_COLOR;
-  const canvasColor = spec.canvasColor || CANVAS_COLOR;
-  const snakeHeadColor = spec.snakeHeadColor || SNAKE_HEAD_COLOR;
-  const snakeBodyColor = spec.snakeBodyColor || SNAKE_BODY_COLOR;
-  const foodColor = spec.foodColor || FOOD_COLOR;
-  const chunkWidth = spec.chunkWidth || CHUNK_WIDTH;
-  const chunkHeight = spec.chunkHeight || CHUNK_HEIGHT;
+  const score = document.getElementById(spec.scoreId || 'score');
+  const bgColor = spec.bgColor || '#fff';
+  const canvasColor = spec.canvasColor || '#ee334d';
+  const snakeHeadColor = spec.snakeHeadColor || '#fff';
+  const snakeBodyColor = spec.snakeBodyColor || '#fff';
+  const foodColor = spec.foodColor || '#fff';
+  const chunkWidth = spec.chunkWidth || 40;
+  const chunkHeight = spec.chunkHeight || 40;
 
   var that = {};
   var isPaused = spec.isPaused || false;
