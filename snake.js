@@ -191,9 +191,10 @@ SNAKE.game = function(spec) {
 
   var food = function(spec) {
     var that = chunk(spec);
-    var padding = spec.padding || 2;
+    var padding = spec.padding || 4;
 
     that.draw = function() {
+      ctx.lineWidth = 2;
       ctx.strokeStyle = spec.color;
       ctx.strokeRect(spec.x+padding, spec.y+padding, spec.width-padding*2, spec.height-padding*2);
       ctx.beginPath();
@@ -242,7 +243,7 @@ SNAKE.game = function(spec) {
   // Utilities
   var resizeCanvas = function() {
     canvas.width = window.innerWidth - (window.innerWidth % chunkWidth) - chunkWidth;
-    canvas.height = window.innerHeight - (window.innerHeight % chunkHeight) - chunkHeight;
+    canvas.height = window.innerHeight - (window.innerHeight % chunkHeight) - chunkHeight*2;
   }
 
   var detectBodyCollision = function(oldHead, transX, transY) {
