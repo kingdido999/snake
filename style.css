@@ -10,13 +10,13 @@ body {
 #canvas {
   display: block;
   margin: auto;
-  margin-top: 40px;
+  margin-top: 50px;
 }
 
 #stats {
   position: absolute;
   color: white;
-  font-size: 1em;
+  font-size: 1.2em;
   font-weight: bold;
 }
 
