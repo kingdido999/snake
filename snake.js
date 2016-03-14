@@ -93,12 +93,14 @@ SNAKE.game = function(spec) {
         case KEY_CODE.space: // Space
           if (t) that.pause();
         default:
-
+          break;
       }
 
       // Start the game after arrow key is pressed
       if (!t && s.getDirection()) t = new Timer(that.loop, 1000 / that.getFPS);
     }
+
+    swipeFunc.init();
   }
 
   that.loop = function() {
@@ -129,7 +131,7 @@ SNAKE.game = function(spec) {
         else transY += speed;
         break;
       default:
-
+        break;
     }
 
     detectBodyCollision(oldHead, transX, transY);
@@ -343,6 +345,73 @@ SNAKE.game = function(spec) {
     }
 
     this.resume();
+  };
+
+  var swipeFunc = {
+  	touches : {
+  		"touchstart": {"x":-1, "y":-1},
+  		"touchmove" : {"x":-1, "y":-1},
+  		"touchend"  : false,
+  		"direction" : "undetermined"
+  	},
+  	touchHandler: function(event) {
+  		var touch;
+  		if (typeof event !== 'undefined'){
+  			event.preventDefault();
+  			if (typeof event.touches !== 'undefined') {
+  				touch = event.touches[0];
+  				switch (event.type) {
+  					case 'touchstart':
+  					case 'touchmove':
+  						swipeFunc.touches[event.type].x = touch.pageX;
+  						swipeFunc.touches[event.type].y = touch.pageY;
+  						break;
+  					case 'touchend':
+  						swipeFunc.touches[event.type] = true;
+  						if (swipeFunc.touches.touchstart.x > -1 && swipeFunc.touches.touchmove.x > -1) {
+                var dx = swipeFunc.touches.touchstart.x - swipeFunc.touches.touchmove.x;
+                var dy = swipeFunc.touches.touchstart.y - swipeFunc.touches.touchmove.y;
+
+                if (Math.abs(dx) > Math.abs(dy)) {
+                  swipeFunc.touches.direction = dx < 0 ? 'right' : 'left';
+                } else {
+                  swipeFunc.touches.direction = dy < 0 ? 'down' : 'up';
+                }
+
+  							console.log(swipeFunc.touches.direction);
+                var currentDir = s.getDirection();
+
+                switch (swipeFunc.touches.direction) {
+                  case 'left':
+                    if (!currentDir || currentDir === DIR.up || currentDir === DIR.down) s.setDirection(DIR.left);
+                    break;
+                  case 'up':
+                    if (!currentDir || currentDir === DIR.left || currentDir === DIR.right) s.setDirection(DIR.up);
+                    break;
+                  case 'right':
+                    if (!currentDir || currentDir === DIR.up || currentDir === DIR.down) s.setDirection(DIR.right);
+                    break;
+                  case 'down':
+                    if (!currentDir || currentDir === DIR.left || currentDir === DIR.right) s.setDirection(DIR.down);
+                    break;
+                  default:
+                    break;
+                }
+
+                // Start the game after swipe
+                if (!t && s.getDirection()) t = new Timer(that.loop, 1000 / that.getFPS);
+  						}
+  					default:
+  						break;
+  				}
+  			}
+  		}
+  	},
+  	init: function() {
+  		document.addEventListener('touchstart', swipeFunc.touchHandler, false);
+  		document.addEventListener('touchmove', swipeFunc.touchHandler, false);
+  		document.addEventListener('touchend', swipeFunc.touchHandler, false);
+  	}
   };
 
   return that;
