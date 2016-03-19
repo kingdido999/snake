@@ -1,5 +1,3 @@
-"use strict";
-
 var SNAKE = SNAKE || {};
 
 SNAKE.game = function(spec) {
