@@ -113,19 +113,19 @@ SNAKE.game = function(spec) {
     // If hit wall, the snake head will appear at the opposite side
     switch (s.getDirection()) {
       case DIR.left:
-        if (oldHead.getX() - speed < 0) transX += canvas.width;
+        if (oldHead.getX() - speed < 0) transX += canvas.width - chunkWidth;
         else transX -= speed;
         break;
       case DIR.right:
-        if (oldHead.getX() + oldHead.getWidth() + speed > canvas.width) transX -= canvas.width;
+        if (oldHead.getX() + oldHead.getWidth() + speed > canvas.width) transX -= canvas.width - chunkWidth;
         else transX += speed;
         break;
       case DIR.up:
-        if (oldHead.getY() - speed < 0) transY += canvas.height;
+        if (oldHead.getY() - speed < 0) transY += canvas.height - chunkHeight;
         else transY -= speed;
         break;
       case DIR.down:
-        if (oldHead.getY() + oldHead.getHeight() + speed > canvas.height) transY -= canvas.height;
+        if (oldHead.getY() + oldHead.getHeight() + speed > canvas.height) transY -= canvas.height - chunkHeight;
         else transY += speed;
         break;
       default:
